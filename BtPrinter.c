@@ -1,5 +1,18 @@
 ﻿#include "printTree.h"
 
+typedef struct PrintInfo {
+    char* nodeString;
+    long long nodeStringSize;
+} PrintInfo;
+
+typedef struct Append {
+    const char* const charArray[CHARARRAY_SIZE];
+    char rightAppend[DEFAULT_APPENDSIZE];
+    char leftAppend[DEFAULT_APPENDSIZE];
+    char blankAppend[DEFAULT_APPENDSIZE];
+    char lineAppend[DEFAULT_APPENDSIZE];
+} Append;
+
 Append appendFormat = { {"┌", "─", "└", "│"}, {0}, {0}, {0}, {0} };
 char treePrinterFlag = 0;
 
@@ -166,7 +179,12 @@ void printString(BtNode* node, char nodePrefix[], char* leftPrefix,
     tmpArray = NULL;
 }
 
-void init(BtNode* root, BtNode* left, BtNode* right) {
+void flushBuffer() {
+    char ch = 0;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+}
+
+void PrinterInit(BtNode* root) {
     int length = 2;
     char stringBuilder[20] = { 0 };
 
@@ -193,13 +211,13 @@ void init(BtNode* root, BtNode* left, BtNode* right) {
 
     printf("是否需要打印出各节点的父节点？ (Y/N) > ");
     scanf("%c", &treePrinterFlag);
-
+    flushBuffer();
     printString(root, "", "", "", &printInfo);
 
     char choose = 0;
     printf("是否需要将树打印到d:\\printTree.txt中？(Y/N) > ");
     scanf("%c", &choose);
-    getchar();
+    flushBuffer();
     if (choose == 'Y' || choose == 'y')
     {
         FILE* pFile = fopen("d:\\printTree.txt", "a+");

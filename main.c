@@ -44,10 +44,10 @@ void addNode(int element) {
 
 int main(void) {
     srand((unsigned)time(NULL));
-    for (int i = 0; i < 20; i++) {
-        addNode(rand() % 300);
+    for (int i = 0; i < 10000; i++) {
+        addNode(rand() % 1000);
     }
     printf("添加完成\n");
-    init(root, root->left, root->right);
+    PrinterInit(root);
     return 0;
 }
