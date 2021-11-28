@@ -9,7 +9,7 @@
 #define DEFAULT_PREFIX 500
 #define DEFAULT_NODESTRING 1000
 
- 
+ /*  将此结构体换成用户自己的结构体，但是名字必须是BtNode  */
 typedef struct BtNode {
     int Element;
     struct BtNode* parent;

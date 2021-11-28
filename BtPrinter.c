@@ -1,5 +1,5 @@
 ﻿#include "printTree.h"
-
+/* 两个结构体不放在头文件的目的：为了对用户隐蔽 */
 typedef struct PrintInfo {
     char* nodeString;
     long long nodeStringSize;
@@ -14,8 +14,11 @@ typedef struct Append {
 } Append;
 
 Append appendFormat = { {"┌", "─", "└", "│"}, {0}, {0}, {0}, {0} };
-char treePrinterFlag = 0;
+char treePrinterFlag = 0;  //记录父节点打印选择
+char haveChoose = 0;   //控制用户选择只显示一次
+char printChoose = 0;  //记录打印位置选择(控制台或者...)
 
+/* 功能性函数群 */
 char* repeat(const char* string, char* stringBuilder, int count) {
     if (string == NULL)
         return NULL;
@@ -179,12 +182,14 @@ void printString(BtNode* node, char nodePrefix[], char* leftPrefix,
     tmpArray = NULL;
 }
 
+
+/* 辅助函数群，从PrinterInit()提炼代码，让PrinterInit()更简洁 */
 void flushBuffer() {
     char ch = 0;
     while ((ch = getchar()) != '\n' && ch != EOF);
 }
 
-void PrinterInit(BtNode* root) {
+void appendFormat_Init() {
     int length = 2;
     char stringBuilder[20] = { 0 };
 
@@ -202,34 +207,48 @@ void PrinterInit(BtNode* root) {
     memset(stringBuilder, 0, sizeof(stringBuilder));
     strcat(appendFormat.lineAppend, appendFormat.charArray[3]);
     strcat(appendFormat.lineAppend, blank(length, stringBuilder));
+}
 
-    PrintInfo printInfo;
-    printInfo.nodeStringSize = sizeof(char) * DEFAULT_NODESTRING;
-    printInfo.nodeString = (char*)malloc(printInfo.nodeStringSize);
-    memset(printInfo.nodeString, 0, printInfo.nodeStringSize);
-    strcat(printInfo.nodeString, "");
+PrintInfo* printInfo_Init() {
+    PrintInfo* printInfo = (PrintInfo*)malloc(sizeof(PrintInfo));
+    printInfo->nodeStringSize = sizeof(char) * DEFAULT_NODESTRING;
+    printInfo->nodeString = (char*)malloc(printInfo->nodeStringSize);
+    memset(printInfo->nodeString, 0, printInfo->nodeStringSize);
+    strcat(printInfo->nodeString, "");
+    return printInfo;
+}
 
-    printf("是否需要打印出各节点的父节点？ (Y/N) > ");
-    scanf("%c", &treePrinterFlag);
-    flushBuffer();
-    printString(root, "", "", "", &printInfo);
+void PrinterInit(BtNode* root) {
+    if (haveChoose == 0) {
+        haveChoose = 1;
+        appendFormat_Init();
 
-    char choose = 0;
-    printf("是否需要将树打印到d:\\printTree.txt中？(Y/N) > ");
-    scanf("%c", &choose);
-    flushBuffer();
-    if (choose == 'Y' || choose == 'y')
+        printf("是否需要打印出各节点的父节点？ (Y/N) > ");
+        scanf("%c", &treePrinterFlag);
+        flushBuffer();
+        printf("是否需要将树打印到d:\\printTree.txt中？(Y/N) > ");
+        scanf("%c", &printChoose);
+        flushBuffer();
+    }
+    PrintInfo* printInfo = printInfo_Init();
+    
+    printString(root, "", "", "", printInfo);
+    if (printChoose == 'Y' || printChoose == 'y')
     {
         FILE* pFile = fopen("d:\\printTree.txt", "a+");
         if (pFile != NULL) {
-            fputs(printInfo.nodeString, pFile);
-            fprintf(pFile, "\n\n");
+            fputs(printInfo->nodeString, pFile);
+            fprintf(pFile, "\n\n==========================================\n");
             fclose(pFile);
         }
     }
     else {
-        printf("%s", printInfo.nodeString);
+        printf("%s", printInfo->nodeString);
+        printf("\n\n==========================================\n");
     }
-    free(printInfo.nodeString);
-    printInfo.nodeString = NULL;
+
+    free(printInfo->nodeString);
+    printInfo->nodeString = NULL;
+    free(printInfo);
+    printInfo = NULL;
 }
