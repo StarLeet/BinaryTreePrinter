@@ -24,7 +24,7 @@ typedef struct BtNode {
 } BtNode;
 
 /*    打印器初始化
-    准备好Apeend结构体的初始化(树干走向打印)
+    准备好Append结构体的初始化(树干走向打印)
     开辟好nodeString动态(用于存放所有的打印信息)
 */
 void PrinterInit(BtNode* root);
