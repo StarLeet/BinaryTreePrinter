@@ -43,6 +43,7 @@ void addNode(int element) {
 }
 
 int main(void) {
+<<<<<<< HEAD
     srand((unsigned)time(NULL));
     for (int i = 0; i < 50; i++) {
         addNode(rand() % 1000);
