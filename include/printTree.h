@@ -1,17 +1,11 @@
-//
-// Created by starlee on 2021/12/8.
-//
+#define _CRT_SECURE_NO_WARNINGS
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-
-#define CHARARRAY_SIZE 4
+#define CHARARRAY_SIZE      4
 #define DEFAULT_APPEND_SIZE 10
 #define DEFAULT_NODE_STRING 1000
 

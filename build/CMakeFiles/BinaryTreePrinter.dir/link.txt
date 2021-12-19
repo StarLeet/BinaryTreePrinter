@@ -1,0 +1,3 @@
+D:\Development\cmake-3.22.1\bin\cmake.exe -E rm -f CMakeFiles\BinaryTreePrinter.dir/objects.a
+D:\Development\msys64\mingw64\bin\llvm-ar.exe qc CMakeFiles\BinaryTreePrinter.dir/objects.a @CMakeFiles\BinaryTreePrinter.dir\objects1.rsp
+D:\Development\msys64\mingw64\bin\clang.exe -g -Wl,--whole-archive CMakeFiles\BinaryTreePrinter.dir/objects.a -Wl,--no-whole-archive -o BinaryTreePrinter.exe -Wl,--out-implib,libBinaryTreePrinter.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\BinaryTreePrinter.dir\linklibs.rsp

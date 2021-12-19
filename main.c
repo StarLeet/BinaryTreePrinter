@@ -4,8 +4,7 @@ BtNode* root = NULL;
 void addNode(int element) {
     if (root == NULL) {
         root = (BtNode*)malloc(sizeof(BtNode));
-        if (root != NULL)
-        {
+        if (root != NULL) {
             root->Element = element;
             root->parent = NULL;
             root->left = NULL;
@@ -19,11 +18,9 @@ void addNode(int element) {
         parent = node;
         if (node->Element < element) {
             node = node->right;
-        }
-        else if (node->Element > element) {
+        } else if (node->Element > element) {
             node = node->left;
-        }
-        else {
+        } else {
             node->Element = element;
             return;
         }
@@ -35,17 +32,15 @@ void addNode(int element) {
         newNode->left = newNode->right = NULL;
         if (element < parent->Element) {
             parent->left = newNode;
-        }
-        else {
+        } else {
             parent->right = newNode;
         }
     }
 }
 
 int main(void) {
-    setvbuf(stdout, NULL, _IONBF, 0);
     srand((unsigned)time(NULL));
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 10; i++) {
         addNode(rand() % 1000);
         PrinterInit(root);
     }

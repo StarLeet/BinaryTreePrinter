@@ -1,0 +1,12 @@
+[
+{
+  "directory": "E:/CodeField/cRepo/Clion_C/BinaryTreePrinter/build",
+  "command": "D:\\Development\\msys64\\mingw64\\bin\\clang.exe -IE:/CodeField/cRepo/Clion_C/BinaryTreePrinter/include -g -o CMakeFiles\\BinaryTreePrinter.dir\\main.c.obj -c E:\\CodeField\\cRepo\\Clion_C\\BinaryTreePrinter\\main.c",
+  "file": "E:\\CodeField\\cRepo\\Clion_C\\BinaryTreePrinter\\main.c"
+},
+{
+  "directory": "E:/CodeField/cRepo/Clion_C/BinaryTreePrinter/build",
+  "command": "D:\\Development\\msys64\\mingw64\\bin\\clang.exe -IE:/CodeField/cRepo/Clion_C/BinaryTreePrinter/include -g -o CMakeFiles\\BinaryTreePrinter.dir\\src\\BtPrinter.c.obj -c E:\\CodeField\\cRepo\\Clion_C\\BinaryTreePrinter\\src\\BtPrinter.c",
+  "file": "E:\\CodeField\\cRepo\\Clion_C\\BinaryTreePrinter\\src\\BtPrinter.c"
+}
+]

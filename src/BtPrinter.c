@@ -13,10 +13,10 @@ typedef struct Append {
     char lineAppend[DEFAULT_APPEND_SIZE];
 } Append;
 
-Append appendFormat = { {"┌", "─", "└", "│"}, {0}, {0}, {0}, {0} };
-char treePrinterFlag = 0;  //记录父节点打印选择
-char haveChoose = 0;   //控制用户选择只显示一次
-char printChoose = 0;  //记录打印位置选择(控制台或者...)
+Append appendFormat = {{"┌", "─", "└", "│"}, {0}, {0}, {0}, {0}};
+char treePrinterFlag = 0; //记录父节点打印选择
+char haveChoose = 0;      //控制用户选择只显示一次
+char printChoose = 0;     //记录打印位置选择(控制台或者...)
 
 /* 功能性函数群 */
 char* repeat(const char* string, char* stringBuilder, int count) {
@@ -32,22 +32,19 @@ char* repeat(const char* string, char* stringBuilder, int count) {
 void toString(BtNode* node, char* getString) {
     _itoa(node->Element, getString, 10);
     if (treePrinterFlag == 'Y' || treePrinterFlag == 'y') {
-        char tmpArray[5] = { 0 };
+        char tmpArray[5] = {0};
+        strcat(getString, "_p_(");
         if (node->parent != NULL) {
             _itoa(node->parent->Element, tmpArray, 10);
-        }
-        strcat(getString, "_p_(");
-        if (node->parent == NULL) {
-            strcat(getString, "NULL");
-        }
-        else {
             strcat(getString, tmpArray);
+        } else {
+            strcat(getString, "NULL");
         }
         strcat(getString, ")");
     }
 }
 
-char* blank(int length, char* stringBuilder) {
+char* blank(unsigned int length, char* stringBuilder) {
     if (length < 0)
         return NULL;
     if (length == 0)
@@ -58,65 +55,67 @@ char* blank(int length, char* stringBuilder) {
     return stringBuilder;
 }
 
-char* saveOldPrefix(char* oldPrefix, int spaceSize) {
-    char* space = (char*)malloc(spaceSize);
-    memset(space, 0, spaceSize);
+char* saveOldPrefix(char* oldPrefix, unsigned int spaceSize) {
+    char* space = (char*)calloc(1, spaceSize);
     strcpy(space, oldPrefix);
     return space;
 }
 
-void printString(BtNode* node, char nodePrefix[], char* leftPrefix,
-                 char* rightPrefix, PrintInfo* printInfo) {
+void printString(BtNode* node,
+                 char nodePrefix[],
+                 char* leftPrefix,
+                 char* rightPrefix,
+                 PrintInfo* printInfo) {
     BtNode* left = node->left;
     BtNode* right = node->right;
 
-    char string[20] = { 0 };
+    char string[20] = {0};
     toString(node, string);
-    int length = strlen(string);
+    unsigned int length = strlen(string);
     if (length % 2 == 0) {
         length--;
     }
     length = (length >> 1);
 
-    int oldLeftPrefixSize = sizeof(char) * (strlen(leftPrefix) + length + 5);
+    unsigned int oldLeftPrefixSize =
+        sizeof(char) * (strlen(leftPrefix) + length + 5);
     char* oldLeftPrefix = saveOldPrefix(
-            leftPrefix,
-            oldLeftPrefixSize); //根据传入参数动态生成数组,无需考虑内存溢出
+        leftPrefix,
+        oldLeftPrefixSize); //根据传入参数动态生成数组,无需考虑内存溢出
 
-    int oldRightPrefixSize = sizeof(char) * (strlen(rightPrefix) + length + 5);
+    unsigned int oldRightPrefixSize =
+        sizeof(char) * (strlen(rightPrefix) + length + 5);
     char* oldRightPrefix = saveOldPrefix(
-            rightPrefix,
-            oldRightPrefixSize); //根据传入参数动态生成数组,无需考虑内存溢出
+        rightPrefix,
+        oldRightPrefixSize); //根据传入参数动态生成数组,无需考虑内存溢出
 
-    int tmpArraySize = sizeof(char) * (length + 5);
-    char* tmpArray = (char*)malloc(tmpArraySize);
-    memset(tmpArray, 0, tmpArraySize);
+    unsigned int tmpArraySize = sizeof(char) * (length + 5);
+    char* tmpArray = (char*)calloc(1, tmpArraySize);
 
     if (right != NULL) {
         strcat(
-                oldRightPrefix,
-                blank(
-                        length,
-                        tmpArray)); // oldRightPrefix初始容量永远大于length,无需担心空间不足
+            oldRightPrefix,
+            blank(
+                length,
+                tmpArray)); // oldRightPrefix初始容量永远大于length,无需担心空间不足
 
-        int newRightPrefixSize =
-                sizeof(char) * (oldRightPrefixSize + DEFAULT_APPEND_SIZE);
-        char* newRightPrefix = (char*)malloc(newRightPrefixSize);
-        memset(newRightPrefix, 0, newRightPrefixSize);
+        unsigned int newRightPrefixSize =
+            sizeof(char) * (oldRightPrefixSize + DEFAULT_APPEND_SIZE);
+        char* newRightPrefix = (char*)calloc(1, newRightPrefixSize);
         strcat(newRightPrefix, oldRightPrefix);
         strcat(newRightPrefix, appendFormat.rightAppend);
 
-        char* newRightPrefix1 = (char*)malloc(newRightPrefixSize);
-        memset(newRightPrefix1, 0, newRightPrefixSize);
+        char* newRightPrefix1 = (char*)calloc(1, newRightPrefixSize);
         strcat(newRightPrefix1, oldRightPrefix);
         strcat(newRightPrefix1, appendFormat.lineAppend);
 
-        char* newRightPrefix2 = (char*)malloc(newRightPrefixSize);
+        char* newRightPrefix2 = (char*)calloc(1, newRightPrefixSize);
         memset(newRightPrefix2, 0, newRightPrefixSize);
         strcat(newRightPrefix2, oldRightPrefix);
         strcat(newRightPrefix2, appendFormat.blankAppend);
 
-        printString(right, newRightPrefix, newRightPrefix1, newRightPrefix2, printInfo);
+        printString(
+            right, newRightPrefix, newRightPrefix1, newRightPrefix2, printInfo);
 
         free(newRightPrefix);
         newRightPrefix = NULL;
@@ -126,16 +125,17 @@ void printString(BtNode* node, char nodePrefix[], char* leftPrefix,
         newRightPrefix2 = NULL;
     }
 
-    long long newNodeStringSize = sizeof(char) * (strlen(nodePrefix) + 25);
-    long long nodeStringHave = printInfo->nodeStringSize - sizeof(char) * (strlen(printInfo->nodeString) + 1);
+    unsigned int newNodeStringSize = sizeof(char) * (strlen(nodePrefix) + 25);
+    unsigned int nodeStringHave =
+        printInfo->nodeStringSize -
+        sizeof(char) * (strlen(printInfo->nodeString) + 1);
     if (newNodeStringSize >= nodeStringHave) {
         printInfo->nodeStringSize += newNodeStringSize << 1;
-        char* tmpNodeString = realloc(printInfo->nodeString, printInfo->nodeStringSize);
+        char* tmpNodeString =
+            realloc(printInfo->nodeString, printInfo->nodeStringSize);
         if (tmpNodeString != NULL) {
             printInfo->nodeString = tmpNodeString;
-        }
-        else
-        {
+        } else {
             printf("nodeString扩容失败\n");
             exit(-1);
         }
@@ -147,24 +147,22 @@ void printString(BtNode* node, char nodePrefix[], char* leftPrefix,
     if (left != NULL) {
         strcat(oldLeftPrefix, blank(length, tmpArray));
 
-        int newLeftPrefixSize =
-                sizeof(char) * (oldLeftPrefixSize + DEFAULT_APPEND_SIZE);
-        char* newLeftPrefix = (char*)malloc(newLeftPrefixSize);
-        memset(newLeftPrefix, 0, newLeftPrefixSize);
+        unsigned int newLeftPrefixSize =
+            sizeof(char) * (oldLeftPrefixSize + DEFAULT_APPEND_SIZE);
+        char* newLeftPrefix = (char*)calloc(1, newLeftPrefixSize);
         strcat(newLeftPrefix, oldLeftPrefix);
         strcat(newLeftPrefix, appendFormat.leftAppend);
 
-        char* newLeftPrefix1 = (char*)malloc(newLeftPrefixSize);
-        memset(newLeftPrefix1, 0, newLeftPrefixSize);
+        char* newLeftPrefix1 = (char*)calloc(1, newLeftPrefixSize);
         strcat(newLeftPrefix1, oldLeftPrefix);
         strcat(newLeftPrefix1, appendFormat.blankAppend);
 
-        char* newLeftPrefix2 = (char*)malloc(newLeftPrefixSize);
-        memset(newLeftPrefix2, 0, newLeftPrefixSize);
+        char* newLeftPrefix2 = (char*)calloc(1, newLeftPrefixSize);
         strcat(newLeftPrefix2, oldLeftPrefix);
         strcat(newLeftPrefix2, appendFormat.lineAppend);
 
-        printString(left, newLeftPrefix, newLeftPrefix1, newLeftPrefix2, printInfo);
+        printString(
+            left, newLeftPrefix, newLeftPrefix1, newLeftPrefix2, printInfo);
 
         free(newLeftPrefix);
         newLeftPrefix = NULL;
@@ -182,16 +180,16 @@ void printString(BtNode* node, char nodePrefix[], char* leftPrefix,
     tmpArray = NULL;
 }
 
-
 /* 辅助函数群，从PrinterInit()提炼代码，让PrinterInit()更简洁 */
 void flushBuffer() {
-    char ch = 0;
-    while ((ch = getchar()) != '\n' && ch != EOF);
+    int ch = 0;
+    while ((ch = getchar()) != '\n' && ch != EOF)
+        ;
 }
 
 void appendFormat_Init() {
     int length = 2;
-    char stringBuilder[20] = { 0 };
+    char stringBuilder[20] = {0};
 
     strcat(appendFormat.rightAppend, appendFormat.charArray[0]);
     strcat(appendFormat.rightAppend,
@@ -199,7 +197,8 @@ void appendFormat_Init() {
 
     memset(stringBuilder, 0, sizeof(stringBuilder));
     strcat(appendFormat.leftAppend, appendFormat.charArray[2]);
-    strcat(appendFormat.leftAppend, repeat(appendFormat.charArray[1], stringBuilder, length));
+    strcat(appendFormat.leftAppend,
+           repeat(appendFormat.charArray[1], stringBuilder, length));
 
     memset(stringBuilder, 0, sizeof(stringBuilder));
     strcat(appendFormat.blankAppend, blank(length + 1, stringBuilder));
@@ -210,11 +209,9 @@ void appendFormat_Init() {
 }
 
 PrintInfo* printInfo_Init() {
-    PrintInfo* printInfo = (PrintInfo*)malloc(sizeof(PrintInfo));
+    PrintInfo* printInfo = (PrintInfo*)calloc(1, sizeof(PrintInfo));
     printInfo->nodeStringSize = sizeof(char) * DEFAULT_NODE_STRING;
-    printInfo->nodeString = (char*)malloc(printInfo->nodeStringSize);
-    memset(printInfo->nodeString, 0, printInfo->nodeStringSize);
-    strcat(printInfo->nodeString, "");
+    printInfo->nodeString = (char*)calloc(1, printInfo->nodeStringSize);
     return printInfo;
 }
 
@@ -233,16 +230,14 @@ void PrinterInit(BtNode* root) {
     PrintInfo* printInfo = printInfo_Init();
 
     printString(root, "", "", "", printInfo);
-    if (printChoose == 'Y' || printChoose == 'y')
-    {
+    if (printChoose == 'Y' || printChoose == 'y') {
         FILE* pFile = fopen("d:\\printTree.txt", "a+");
         if (pFile != NULL) {
             fputs(printInfo->nodeString, pFile);
             fprintf(pFile, "\n\n==========================================\n");
             fclose(pFile);
         }
-    }
-    else {
+    } else {
         printf("%s", printInfo->nodeString);
         printf("\n\n==========================================\n");
     }
